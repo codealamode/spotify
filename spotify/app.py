@@ -1,4 +1,5 @@
 import time
+import pandas as pd
 import secrets
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
@@ -22,8 +23,7 @@ def create_app():
     def index():
         session["token_info"], authorized = get_token(session)
 
-        return render_template('index.html', session_token = session.get("token_info", ""), 
-                                authorized=authorized)
+        return render_template('index.html')
 
 
     @app.route("/spotify_login")
@@ -57,7 +57,17 @@ def create_app():
     def user_top_tracks():
         sp = get_sp(session)
         user_top_tracks = sp.current_user_top_tracks(limit=20, time_range="short_term")["items"]
-        return render_template("user_top_tracks.html", user_top_tracks=user_top_tracks)
+        top_track_ids =[track["id"] for track in sp.current_user_top_tracks(limit=20, time_range="short_term")["items"]]
+
+        top_track_features = sp.audio_features(top_track_ids)
+
+        features_df = pd.DataFrame(top_track_features).drop(columns=["type", "id", "uri", "track_href", "analysis_url"])
+
+        #Drop uneccesary features
+        features_df.to_csv("features_df.csv", index=False)
+        
+        return render_template("user_top_tracks.html", user_top_tracks=user_top_tracks, top_track_ids=top_track_ids, 
+                                top_track_features=top_track_features, features_df=features_df)
     
 
     @app.route("/user_profile")

@@ -16,6 +16,10 @@
     {% for track in user_top_tracks %}
     <p>{{ track["name"] }}</p>
     {% endfor %}
+    <br>
+    {{ top_track_features }}
+    <br><br>
+    {{ features_df }}
     {% endblock %}
     </body>
 </html>
