@@ -49,10 +49,10 @@ def create_app():
 
     @app.route("/user_playlists")
     def user_playlists():
-        sp = get_sp(session)        
+        sp = get_sp(session)
         user_playlists = sp.current_user_playlists()["items"]
 
-        return render_template("user_playlists.html", 
+        return render_template("user_playlists.html",
                                user_playlists = user_playlists)
     
     @app.route("/user_top_tracks")
@@ -60,7 +60,7 @@ def create_app():
         sp = get_sp(session)
         user_top_tracks = sp.current_user_top_tracks(limit=20, 
                                                      time_range="short_term",
-                                                    )["items"]
+                                                     )["items"]
         return render_template("user_top_tracks.html", 
                                user_top_tracks=user_top_tracks)
 
