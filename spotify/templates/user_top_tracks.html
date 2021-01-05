@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Spotify</title>
+    <link rel="stylesheet" href="https://unpkg.com/picnic"/>
+  </head>
+    
+  <body>
+    <nav>
+      <a href="/" class="brand"><span>Spotify</span></a>
+    </nav>
+    <br><br>
+    {% block content %}
+    <h1>Your top tracks</h1>
+    <hr>
+    {% for track in user_top_tracks %}
+    <p>{{ track["name"] }}</p>
+    {% endfor %}
+    {% endblock %}
+    </body>
+</html>
