@@ -13,7 +13,13 @@
     <br><br>
     {% block content %}
     <p>Hello!</p>
+    {% if authorized %}
+    <a href="/user_playlists" class="button">My playlists</a>
+    <a href="/user_top_tracks" class="button">My top tracks</a>
+    <a href="/user_profile" class="button">My user profile</a>
+    {% else %}
     <a href="/spotify_login" class="button">Log in with Spotify</a>
+    {% endif %}
     {% endblock %}
     </body>
 </html>
