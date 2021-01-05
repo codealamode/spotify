@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+	{% if title %}
+	<title>YHT • {{ title }}</title>
+	{% else %}
+	<title>You'll Hate This</title>
+	{% endif %}
+</head>
+
+<style>
+	@media screen and (max-width: 700px) {
+		ul {
+			list-style-type: none;
+			display: table;
+			margin: -10px;
+			padding: 0;
+			font-size: 26px;}
+		li a {
+			display: block;
+			padding: 15px;}
+		.banner {
+			color:#12152e;
+			font-size:40px;}
+		.header {
+  			font-size: 260%;}
+		.subheader {
+			font-size: 30px;}
+		.content {
+  			font-size: 14px;
+  			position: relative;
+  			top: -20px;}
+		.content-block {
+  			color:#12152e;
+  			width:90vw;
+  			position:relative;
+  			left:-30px;}
+		.splash {
+			display:none;}
+		.tilt {
+			-ms-transform: rotate(0deg);
+			-webkit-transform: rotate(0deg);
+			transform: rotate(0deg);}
+	}
+	@media screen and (min-width: 701px) {
+		ul {
+			list-style-type: none;
+			display: table;
+			margin: -10px;
+			padding: 0;
+			font-size: 23px;}
+		li a {
+			display: block;
+			padding: 15px;}
+		.banner {
+			color:#12152e;
+			font-size:40px;}
+		.header {
+  			font-size: 220%;}
+		.subheader {
+			font-size: 35px;}
+		.content {
+  			font-size: 19px;
+  			position: relative;
+  			top: -20px;}
+  		.content-block {
+  			color:#12152e;
+  			width:800px;}
+	}
+	li {
+		float: left;}
+	a {
+  		color: white;}
+  	a:link {
+		color: white;
+		text-decoration: none;
+		font-weight: normal}
+	a:visited {
+		color: white;
+		text-decoration: none;
+		font-weight: normal}
+	a:active {
+		color: white;
+		text-decoration: none}
+	a:hover {
+		color: white;
+		text-decoration: none;
+		font-weight: none}
+	a.head:link {
+		color: white;
+		text-decoration: none;
+		font-weight: normal}
+	a.head:visited {
+		color: white;
+		text-decoration: none;
+		font-weight: normal}
+	a.head:active {
+		color: white;
+		text-decoration: none}
+	a.head:hover {
+		color: grey;
+		text-decoration: none;
+		font-weight: none}
+	a.inner:link {
+		color: black;
+		text-decoration: none;
+		font-weight: normal}
+	a.inner:visited {
+		color: black;
+		text-decoration: none;
+		font-weight: normal;}
+	a.inner:active {
+		color: white;
+		text-decoration: none;}
+	a.inner:hover {
+		color: white;
+		text-decoration: none;
+		font-weight: none;}
+    .button {
+        border-radius: 25px;
+        background:#1DB954;
+        padding: 20px; 
+        width: 200px;
+        height: 150px;  
+    }
+
+
+
+	.content {
+		min-height: 95%;}
+	.content-inside {
+		padding: 20px;
+		padding-bottom: 50px;}
+	.footer {
+		position: fixed;
+		height: 50px;
+		margin-top: -50px;
+  		left: 0;
+  		bottom: 0;
+  		width: 100%;
+  		color: white;
+  		text-align: center;}
+</style>
+
+<body style='font-family:Impact'>
+	<div>
+		<div>
+			<div>
+				<center>
+					<p class="banner">
+						Bad Song Suggestions
+                    </p>
+                    <p style="position:relative;top:-20px">
+                        <i>"Trust us, you'll hate this..."</i>
+                    </p>
+                    <div style="width:100%;background-color:black;">
+					<ul>
+						<li style="background-color:#292929"><a href="" class="head">Home</a></li>
+						<li><a href="" class="head">About</a></li>
+						<li><a href="" class="head">Team</a></li>
+                    </ul>
+                    </div>
+                </center>
+
+			</div>
+			<div style="position:relative;top:20px;font-size:20px">
+				<div class="container content-block">
+					{% block content %}
+					{% endblock %}
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
