@@ -45,10 +45,12 @@ def get_token(session):
 
 
 def get_sp(session):
-    """Creates spotify object to make API call. If the user has not yet authorized in the current 
-        session, they are directed back to the home page. If they have already 
-        authorized, a Spotify object with an access token is created, which is 
-        then used to make the appropriate API call."""
+    """
+    Creates spotify object to make API call. If the user has not yet 
+    authorized in the current session, they are directed back to the home 
+    page. If they have already authorized, a Spotify object with an access 
+    token is created, which is then used to make the appropriate API call.
+    """
 
     session["token_info"], authorized=get_token(session)
     if not authorized:
@@ -69,6 +71,7 @@ def create_spotify_oauth():
 
 def get_lyrics(artist_names, track_names):
     """
+    this docstring is epic - Trey
     Input:  artist_names - A list of artist names
             track_names - A list of track names
 
@@ -85,6 +88,7 @@ def get_lyrics(artist_names, track_names):
 
 
 if __name__ == "__main__":
+    print('DEBUG MODE DETECTED FOR UTILS.PY - TESTING WITH DUMMY DATA')
     genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
     artist = genius.search_artist("Britney Spears", max_songs=0)
     song=artist.song("Toxic")

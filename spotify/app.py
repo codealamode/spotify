@@ -5,6 +5,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from flask import Flask, render_template, request, redirect, session
 from .utils import *
+# TODO:
+# > Add "is_logged_in" check to block routes if a user isn't logged in yet.
 
 
 def create_app():
@@ -47,6 +49,8 @@ def create_app():
     @app.route("/user_playlists")
     def user_playlists():
         sp = get_sp(session)
+        # !BUG! A bug happens here if a user tries to access this route without
+        #       being logged in...
         user_playlists = sp.current_user_playlists()["items"]
 
         return render_template("user_playlists.html", 
@@ -58,27 +62,39 @@ def create_app():
     def user_top_tracks():
         sp = get_sp(session)
 
-        #Get top 10 of user's recently listened to tracks
-        user_top_tracks = sp.current_user_top_tracks(limit=10, time_range="short_term")["items"]
+        # Get top 10 of user's recently listened to tracks
+        # !BUG! A bug happens here if a user tries to access this route without
+        #       being logged in...
+        user_top_tracks = sp.current_user_top_tracks(limit=10, 
+                                                     time_range="short_term"
+                                                     )["items"]
     
-        #Get track ids for each track in user_top_tracks. Track id is needed to retrieve audio features for each of those tracks.
-        top_track_ids =[track["id"] for track in sp.current_user_top_tracks(limit=10, time_range="short_term")["items"]]
+        # Get track ids for each track in user_top_tracks. Track id is needed 
+        # to retrieve audio features for each of those tracks.
+        top_track_ids =[track["id"] for track in user_top_tracks]
         top_track_features = sp.audio_features(top_track_ids)
 
-        #Create features dataframe and drop all unnecessary features
-        features_df = pd.DataFrame(top_track_features).drop(columns=["type", "id", "uri", "track_href", "analysis_url"])
+        # Create features dataframe and drop all unnecessary features
+        try:
+            cols = ["type", "id", "uri", "track_href", "analysis_url"]
+            features_df = pd.DataFrame(top_track_features).drop(columns=cols)
+        except:
+            return render_template("error.html",
+                                   type='0 - Empty Spotify')
 
-        #Write the df to a csv file
+        # Write the df to a csv file
         features_df.to_csv("features_df.csv", index=False)
 
-        #Get list of artist names for each track in user_top_tracks. 
-        #Some tracks have multiple artists. In those cases, we choose just the first one to feed into get_lyrics()
-        top_track_artists = [track["artists"][0]["name"] for track in user_top_tracks]
+        # Get list of artist names for each track in user_top_tracks. 
+        # NOBUG: Some tracks have multiple artists. In those cases, we choose 
+        #        just the first one to feed into get_lyrics()
+        top_track_artists = [track["artists"][0]["name"] 
+                             for track in user_top_tracks]
 
-        #Get list of track names for each track in user_top_tracks
+        # Get list of track names for each track in user_top_tracks
         top_track_names = [track["name"] for track in user_top_tracks]
 
-        #list of lyrics for user's top tracks
+        # list of lyrics for user's top tracks
         lyrics = get_lyrics([top_track_artists[3]], [top_track_names[3]])
 
         return render_template("user_top_tracks.html", 
