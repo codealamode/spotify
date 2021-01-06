@@ -1,3 +1,4 @@
+import lyricsgenius
 import time
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
@@ -16,7 +17,7 @@ SPOTIPY_REDIRECT_URI=getenv("SPOTIPY_REDIRECT_URI")
 def get_token(session):
     """Checks to see if there's a valid token for the current session and/or whether an existing token is expired. 
         If expired, it grabs the refresh token."""
-        
+
     token_valid = False
     token_info = session.get("token_info", {})
 
@@ -55,5 +56,29 @@ def create_spotify_oauth():
     return SpotifyOAuth(
             client_id=SPOTIPY_CLIENT_ID,
             client_secret=SPOTIPY_CLIENT_SECRET,
-            redirect_uri="http://127.0.0.1:5000/callback",
+            redirect_uri=SPOTIPY_REDIRECT_URI,            
             scope=SCOPE)
+
+
+def get_lyrics(artist_names, track_names):
+    """
+    Input:  artist_names - A list of artist names
+            track_names - A list of track names
+
+    Returns: A list of lyrics corresponding to each track 
+    """
+    genius=lyricsgenius.Genius("Hx_RYZhHqbeUEKLLO4zPXtGln4r4Me5F13H_yV-JONz9K78-DGkayhDV9rsXagWf")
+
+    lyrics=[]
+    for idx, track in enumerate(track_names):
+        artist = genius.search_artist(artist_names[idx], max_songs=0)
+        lyrics.append(artist.song(track).lyrics)
+    return lyrics
+
+
+
+if __name__ == "__main__":
+    genius=lyricsgenius.Genius("Hx_RYZhHqbeUEKLLO4zPXtGln4r4Me5F13H_yV-JONz9K78-DGkayhDV9rsXagWf")
+    artist = genius.search_artist("Britney Spears", max_songs=0)
+    song=artist.song("Toxic")
+    print(song.lyrics)
