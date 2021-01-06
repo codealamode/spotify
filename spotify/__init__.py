@@ -1,3 +1,3 @@
-from .app import create_app
+from spotify.app import create_app
 
 APP = create_app()
