@@ -12,6 +12,8 @@ SCOPE="user-library-read user-top-read"
 SPOTIPY_CLIENT_ID=getenv("SPOTIPY_CLIENT_ID")
 SPOTIPY_CLIENT_SECRET=getenv("SPOTIPY_CLIENT_SECRET")
 SPOTIPY_REDIRECT_URI=getenv("SPOTIPY_REDIRECT_URI")
+GENIUS_ACCESS_TOKEN=getenv("GENIUS_ACCESS_TOKEN")
+
 
 # Checks to see if token is valid and gets a new token if not
 def get_token(session):
@@ -43,7 +45,7 @@ def get_token(session):
 
 
 def get_sp(session):
-    """Creates spotify access. If the user has not yet authorized in the current 
+    """Creates spotify object to make API call. If the user has not yet authorized in the current 
         session, they are directed back to the home page. If they have already 
         authorized, a Spotify object with an access token is created, which is 
         then used to make the appropriate API call."""
@@ -72,7 +74,7 @@ def get_lyrics(artist_names, track_names):
 
     Returns: A list of lyrics corresponding to each track 
     """
-    genius=lyricsgenius.Genius("Hx_RYZhHqbeUEKLLO4zPXtGln4r4Me5F13H_yV-JONz9K78-DGkayhDV9rsXagWf")
+    genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
 
     lyrics=[]
     for idx, track in enumerate(track_names):
@@ -83,7 +85,7 @@ def get_lyrics(artist_names, track_names):
 
 
 if __name__ == "__main__":
-    genius=lyricsgenius.Genius("Hx_RYZhHqbeUEKLLO4zPXtGln4r4Me5F13H_yV-JONz9K78-DGkayhDV9rsXagWf")
+    genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
     artist = genius.search_artist("Britney Spears", max_songs=0)
     song=artist.song("Toxic")
     print(song.lyrics)
