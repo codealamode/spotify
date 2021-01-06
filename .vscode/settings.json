@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "C:\\Users\\Chris\\.virtualenvs\\spotify-X2I_clCg\\Scripts\\python.exe"
+    "python.pythonPath": "C:\\Users\\Chris\\.virtualenvs\\spotify-X2I_clCg\\Scripts\\python.exe",
+    "editor.rulers": [80,120]
 }

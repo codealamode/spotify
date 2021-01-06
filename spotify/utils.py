@@ -15,7 +15,8 @@ SPOTIPY_REDIRECT_URI=getenv("SPOTIPY_REDIRECT_URI")
 
 # Checks to see if token is valid and gets a new token if not
 def get_token(session):
-    """Checks to see if there's a valid token for the current session and/or whether an existing token is expired. 
+    """Checks to see if there's a valid token for the current session and/or 
+        whether an existing token is expired. 
         If expired, it grabs the refresh token."""
 
     token_valid = False
@@ -33,21 +34,25 @@ def get_token(session):
     # Refreshing token if it has expired
     if (is_token_expired):
         sp_oauth = create_spotify_oauth()
-        token_info = sp_oauth.refresh_access_token(session.get('token_info').get('refresh_token'))
+        token_info = sp_oauth.refresh_access_token(
+            session.get('token_info').get('refresh_token')
+        )
 
     token_valid = True
     return token_info, token_valid
 
 
 def get_sp(session):
-    """Creates spotify access. If the user has not yet authorized in the current session, they are directed back to the home page.
-        If they have already authorized, a Spotify object with an access token is created, 
-        which is then used to make the appropriate API call."""
+    """Creates spotify access. If the user has not yet authorized in the current 
+        session, they are directed back to the home page. If they have already 
+        authorized, a Spotify object with an access token is created, which is 
+        then used to make the appropriate API call."""
 
     session["token_info"], authorized=get_token(session)
     if not authorized:
         return redirect("/")
-    return spotipy.Spotify(auth=session.get('token_info').get('access_token'), requests_timeout=10)
+    return spotipy.Spotify(auth=session.get('token_info').get('access_token'), 
+                                            requests_timeout=10)
 
 
 def create_spotify_oauth():
@@ -82,3 +87,4 @@ if __name__ == "__main__":
     artist = genius.search_artist("Britney Spears", max_songs=0)
     song=artist.song("Toxic")
     print(song.lyrics)
+           
