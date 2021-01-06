@@ -53,7 +53,8 @@ def create_app():
         user_playlists = sp.current_user_playlists()["items"]
 
         return render_template("user_playlists.html",
-                               user_playlists = user_playlists)
+                               user_playlists = user_playlists,
+                               title='Playlists')
     
     @app.route("/user_top_tracks")
     def user_top_tracks():
@@ -62,7 +63,8 @@ def create_app():
                                                      time_range="short_term",
                                                      )["items"]
         return render_template("user_top_tracks.html", 
-                               user_top_tracks=user_top_tracks)
+                               user_top_tracks=user_top_tracks,
+                               title='Top Tracks')
 
     @app.route("/user_profile")
     def user_profile():

@@ -5,75 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 	{% if title %}
-	<title>YHT • {{ title }}</title>
+	<title>Bad Songs • {{ title }}</title>
 	{% else %}
-	<title>You'll Hate This</title>
+	<title>Bad Songs</title>
 	{% endif %}
 </head>
 
 <style>
+	/*Mobile style*/
 	@media screen and (max-width: 700px) {
-		ul {
+		ul { /*Primary navbar style*/
 			list-style-type: none;
 			display: table;
 			margin: -10px;
 			padding: 0;
 			font-size: 26px;}
-		li a {
+		li a { /*List attribute for our navbar*/
 			display: block;
 			padding: 15px;}
-		.banner {
+		.banner { /*Site-wide banner*/
 			color:#12152e;
 			font-size:40px;}
-		.header {
+		.header { /*Header for the content block*/
   			font-size: 260%;}
-		.subheader {
-			font-size: 30px;}
-		.content {
+		.subheader { /*Subheaders within the content block*/
+			font-size: 180%;}
+		.content { /*Content block wrapper*/
   			font-size: 14px;
   			position: relative;
   			top: -20px;}
-		.content-block {
+		.content-block { /*Content block style*/
   			color:#12152e;
   			width:90vw;
   			position:relative;
   			left:-30px;}
-		.splash {
-			display:none;}
-		.tilt {
-			-ms-transform: rotate(0deg);
-			-webkit-transform: rotate(0deg);
-			transform: rotate(0deg);}
 	}
+	/*Desktop style*/
 	@media screen and (min-width: 701px) {
-		ul {
+		ul { /*Primary navbar style*/
 			list-style-type: none;
 			display: table;
 			margin: -10px;
 			padding: 0;
 			font-size: 23px;}
-		li a {
+		li a { /*List attribute for our navbar*/
 			display: block;
 			padding: 15px;}
-		.banner {
+		.banner { /*Site-wide banner*/
 			color:#12152e;
 			font-size:40px;}
-		.header {
+		.header { /*Header for the content block*/
   			font-size: 220%;}
-		.subheader {
+		.subheader { /*Subheaders within the content block*/
 			font-size: 35px;}
-		.content {
+		.content { /*Content block wrapper*/
   			font-size: 19px;
   			position: relative;
   			top: -20px;}
-  		.content-block {
+  		.content-block { /*Content block style*/
   			color:#12152e;
   			width:800px;}
 	}
+	/*Global styles*/
 	li {
 		float: left;}
 	a {
   		color: white;}
+	/*A ton of link styles- this is horrible...*/
   	a:link {
 		color: white;
 		text-decoration: none;
@@ -119,22 +117,19 @@
 		color: white;
 		text-decoration: none;
 		font-weight: none;}
-    .button {
+    .button { /*Spotify-esque button style*/
         border-radius: 25px;
         background:#1DB954;
         padding: 20px; 
         width: 200px;
-        height: 150px;  
-    }
-
-
-
-	.content {
+        height: 150px;  }
+	/*Footer styles*/
+	.content { /*Wrapper for our content*/
 		min-height: 95%;}
-	.content-inside {
+	.content-inside { /*Content inside our wrapper*/
 		padding: 20px;
 		padding-bottom: 50px;}
-	.footer {
+	.footer { /*Primary footer class*/
 		position: fixed;
 		height: 50px;
 		margin-top: -50px;

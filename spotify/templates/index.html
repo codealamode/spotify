@@ -7,9 +7,11 @@
     <br><br>
     {% block login %}
       {% if authorized %}
-        <a href="/user_playlists" class="button">My playlists</a>
-        <a href="/user_top_tracks" class="button">My top tracks</a>
-        <a href="/user_profile" class="button">My user profile</a>
+        <center>
+          <a href="/user_playlists" class="button">My playlists</a>
+          <a href="/user_top_tracks" class="button">My top tracks</a>
+          <a href="/user_profile" class="button">My user profile</a>
+        </center>
         {% else %}
         <center><a href="/spotify_login" class="button">Log in with Spotify</a></center>
         <br></br>
