@@ -93,4 +93,3 @@ if __name__ == "__main__":
     artist = genius.search_artist("Britney Spears", max_songs=0)
     song=artist.song("Toxic")
     print(song.lyrics)
-           

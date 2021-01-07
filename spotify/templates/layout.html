@@ -11,6 +11,8 @@
 	{% endif %}
 </head>
 
+<!--MOVE THIS TO A .CSS EVENTUALLY !!! MOVE THIS TO A .CSS EVENTUALLY !!! MOVE THIS TO A .CSS EVENTUALLY !!! MOVE THIS TO A .CSS EVENTUALLY !!! MOVE THIS TO A .CSS EVENTUALLY !!! MOVE THIS TO A .CSS EVENTUALLY !!! -->
+
 <style>
 	/*Mobile style*/
 	@media screen and (max-width: 700px) {
@@ -29,7 +31,7 @@
 		.header { /*Header for the content block*/
   			font-size: 260%;}
 		.subheader { /*Subheaders within the content block*/
-			font-size: 180%;}
+			font-size: 120%;}
 		.content { /*Content block wrapper*/
   			font-size: 14px;
   			position: relative;
@@ -67,6 +69,9 @@
   			width:800px;}
 	}
 	/*Global styles*/
+	table, th, td {
+  		border: 1px solid black;
+		padding: 5px}
 	li {
 		float: left;}
 	a {
@@ -160,8 +165,8 @@
                     </div>
                 </center>
 
-			</div>
-			<div style="position:relative;top:20px;font-size:20px">
+			</div> <!--To play around with inner fonts, remove the "/* */" around font family in the below string and add custom values-->
+			<div style="position:relative;top:20px;font-size:20px;/*font-family:Arial;*/">
 				<div class="container content-block">
 					{% block content %}
 					{% endblock %}

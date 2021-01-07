@@ -3,7 +3,7 @@ import pandas as pd
 import secrets
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 from .utils import *
 # TODO:
 # > Add "is_logged_in" check to block routes if a user isn't logged in yet.
@@ -15,13 +15,16 @@ def create_app():
     app.secret_key=secrets.token_bytes(16)
 
     # Home
-    @app.route('/')
+    @app.route("/")
     def index():
         # Pulls login status to pass into renderer.
         session["token_info"], authorized = get_token(session)
-
-        return render_template('index.html', 
-                               authorized=authorized)
+        
+        # Keep the user on this page if not authorized otherwise direct to app.
+        if not authorized:
+            return render_template("index.html")
+        else:
+            return redirect(url_for("main_app"))
 
 
     # Redirects users to login with spotify.
@@ -42,9 +45,28 @@ def create_app():
         token_info = sp.get_access_token(code, check_cache=False)
         
         session["token_info"] = token_info
-        
-        return redirect('/')
 
+        return redirect(url_for("main_app"))
+
+
+    @app.route("/app")
+    def main_app():
+        sp = get_sp(session)
+
+        session["token_info"], authorized = get_token(session)
+        
+        if authorized:
+            top = [['Music Man', 'My Song'], ['Cool Guy', 'Butts'], 
+                   ['LOUD DUDE', 'HEY'], 
+                   ['obnoxiously long name that just keeps going', 'tattoos']]
+            # UNCOMMENT FOR REAL DATA NOTE: NOT READY FOR REAL DATA YET
+            # top = sp.current_user_top_tracks(limit=10, 
+            #                                    time_range="short_term"
+            #                                    )["items"]
+        
+            return render_template('main_app.html', sp=sp, top=top)
+        else:
+            return redirect(url_for("index"))
 
     @app.route("/user_playlists")
     def user_playlists():
@@ -68,7 +90,7 @@ def create_app():
         user_top_tracks = sp.current_user_top_tracks(limit=10, 
                                                      time_range="short_term"
                                                      )["items"]
-    
+        breakpoint()
         # Get track ids for each track in user_top_tracks. Track id is needed 
         # to retrieve audio features for each of those tracks.
         top_track_ids =[track["id"] for track in user_top_tracks]
