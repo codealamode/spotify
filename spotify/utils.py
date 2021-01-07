@@ -1,3 +1,4 @@
+import lyricsgenius
 import time
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
@@ -11,13 +12,15 @@ SCOPE="user-library-read user-top-read"
 SPOTIPY_CLIENT_ID=getenv("SPOTIPY_CLIENT_ID")
 SPOTIPY_CLIENT_SECRET=getenv("SPOTIPY_CLIENT_SECRET")
 SPOTIPY_REDIRECT_URI=getenv("SPOTIPY_REDIRECT_URI")
+GENIUS_ACCESS_TOKEN=getenv("GENIUS_ACCESS_TOKEN")
+
 
 # Checks to see if token is valid and gets a new token if not
 def get_token(session):
     """Checks to see if there's a valid token for the current session and/or 
         whether an existing token is expired. 
         If expired, it grabs the refresh token."""
-        
+
     token_valid = False
     token_info = session.get("token_info", {})
 
@@ -42,10 +45,12 @@ def get_token(session):
 
 
 def get_sp(session):
-    """Creates spotify access. If the user has not yet authorized in the current 
-        session, they are directed back to the home page. If they have already 
-        authorized, a Spotify object with an access token is created, which is 
-        then used to make the appropriate API call."""
+    """
+    Creates spotify object to make API call. If the user has not yet 
+    authorized in the current session, they are directed back to the home 
+    page. If they have already authorized, a Spotify object with an access 
+    token is created, which is then used to make the appropriate API call.
+    """
 
     session["token_info"], authorized=get_token(session)
     if not authorized:
@@ -60,5 +65,32 @@ def create_spotify_oauth():
     return SpotifyOAuth(
             client_id=SPOTIPY_CLIENT_ID,
             client_secret=SPOTIPY_CLIENT_SECRET,
-            redirect_uri=SPOTIPY_REDIRECT_URI,
+            redirect_uri=SPOTIPY_REDIRECT_URI,            
             scope=SCOPE)
+
+
+def get_lyrics(artist_names, track_names):
+    """
+    this docstring is epic - Trey
+    Input:  artist_names - A list of artist names
+            track_names - A list of track names
+
+    Returns: A list of lyrics corresponding to each track 
+    """
+    genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
+
+    lyrics=[]
+    for idx, track in enumerate(track_names):
+        artist = genius.search_artist(artist_names[idx], max_songs=0)
+        lyrics.append(artist.song(track).lyrics)
+    return lyrics
+
+
+
+if __name__ == "__main__":
+    print('DEBUG MODE DETECTED FOR UTILS.PY - TESTING WITH DUMMY DATA')
+    genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
+    artist = genius.search_artist("Britney Spears", max_songs=0)
+    song=artist.song("Toxic")
+    print(song.lyrics)
+           

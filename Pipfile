@@ -10,6 +10,8 @@ spotipy = "*"
 python-dotenv = "*"
 flask = "*"
 jinja2 = "*"
+pandas = "*"
+lyricsgenius = "*"
 
 [requires]
 python_version = "3.8.6"
