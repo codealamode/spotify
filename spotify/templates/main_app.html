@@ -4,44 +4,27 @@
         <p class="subheader">Welcome, {{ sp.current_user()['display_name'].split(" ")[0] }}!</p>
     </center>
     <center style="position:relative;top:20px"> <!--BIG HACK HERE-->
-        <a href="/user_playlists" class="button">My playlists</a>
-        <a href="/user_top_tracks" class="button">My top tracks</a>
-        <a href="/user_profile" class="button">My user profile</a>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
         <br></br>
-        <a onclick="populateTable()" class="button" style="position:relative;top:20px">Populate</a>
+
+        
     </center>
     <center style="position: relative;top:80px;"> <!--BIG HACK HERE-->
+        <form method="POST" action="/app">
+            <button class="button" style="font-size:25px;">Generate Suggestions</button>
+            <p style="color:grey">Bad Suggestions</p>
+            <p style="position:relative;bottom:10px">
+                <input type="checkbox" name="goodorbad">
+            </p>
+        </form>
         <table id="defaulttable" style="width:50%;">
-            <p>Example Album Title</p>
-            <tr>
-              <th>Song</th>
-              <th>Artist</th>
-              <th>play</th>
+        {% if songs %}
+            {% for song in songs %}
+            <tr style="background-color:#4CAF50">
+                <th><iframe src="https://open.spotify.com/embed/track/{{ song }}" width="400" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></th>
             </tr>
-          </table> 
+            {% endfor %}
+        {% endif %}
+        </table> 
     </center>
-    <script>
-        function populateTable() {
-            var getRandom = () => Math.round(Math.random() * 10)
-            var table = document.getElementById("defaulttable");
-            resetTable(table);
-            // This is horrible...
-            var list = [];
-            for (let i = 0; i < 10; i++){
-                list.push([getRandom(), getRandom(), getRandom()])
-            }
-
-            for (let i = 0; i < list.length; i++){
-                table.innerHTML += "<tr><th></th><th></th><th></th></tr>"
-                for (let j = 0; j < 3; j++){
-                    table.rows[i + 1].cells[j].innerHTML = list[i][j];
-                }
-            }
-        }
-
-        function resetTable(table) {
-            table.innerHTML = '<tr><th>Song</th><th>Artist</th><th>play</th></tr>';
-        }
-
-    </script>
 {% endblock %}
