@@ -7,21 +7,41 @@
         <a href="/user_playlists" class="button">My playlists</a>
         <a href="/user_top_tracks" class="button">My top tracks</a>
         <a href="/user_profile" class="button">My user profile</a>
+        <br></br>
+        <a onclick="populateTable()" class="button" style="position:relative;top:20px">Populate</a>
     </center>
     <center style="position: relative;top:80px;"> <!--BIG HACK HERE-->
-        <table style="width:50%;">
+        <table id="defaulttable" style="width:50%;">
+            <p>Example Album Title</p>
             <tr>
               <th>Song</th>
               <th>Artist</th>
               <th>play</th>
             </tr>
-            {% for song in top %}
-                <tr>
-                    <td>{{ song[0] }}</td>
-                    <td>{{ song[1] }}</td>
-                    <td>50</td>
-                </tr>
-            {% endfor %}
           </table> 
     </center>
+    <script>
+        function populateTable() {
+            var getRandom = () => Math.round(Math.random() * 10)
+            var table = document.getElementById("defaulttable");
+            resetTable(table);
+            // This is horrible...
+            var list = [];
+            for (let i = 0; i < 10; i++){
+                list.push([getRandom(), getRandom(), getRandom()])
+            }
+
+            for (let i = 0; i < list.length; i++){
+                table.innerHTML += "<tr><th></th><th></th><th></th></tr>"
+                for (let j = 0; j < 3; j++){
+                    table.rows[i + 1].cells[j].innerHTML = list[i][j];
+                }
+            }
+        }
+
+        function resetTable(table) {
+            table.innerHTML = '<tr><th>Song</th><th>Artist</th><th>play</th></tr>';
+        }
+
+    </script>
 {% endblock %}
