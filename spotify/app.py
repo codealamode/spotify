@@ -95,6 +95,7 @@ def create_app():
         top_track_names = [track["name"] for track in user_top_tracks]
 
         # list of lyrics for user's top tracks
+        # NOTE: takes around 20 seconds to pull lyrics for 10 tracks
         lyrics = get_lyrics(top_track_artists, top_track_names)
 
         # Read from song dataset
@@ -105,7 +106,7 @@ def create_app():
         return render_template("user_top_tracks.html", 
                                 top_track_artists=top_track_artists, 
                                 top_track_names=top_track_names, 
-                                lyrics=lyrics, 
+                                lyrics=lyrics[0], 
                                 recs=recs,
                                 title="Top Tracks")
 
