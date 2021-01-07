@@ -11,7 +11,16 @@
       {% for name in top_track_names %}
         <p>{{ name }}</p>
       {% endfor %}
-      {{ lyrics }}
+      <br>
+      <h2>Your rec playlist name</h2>
+      {{ playlist_name }}
+      <br><br>
+      <h1>You'll hate these tracks!</h1>
+      <hr>
+      {% for name in rec_names %}
+        <p>{{ name }}</p>>
+      {% endfor %}
+      <br><br>
     {% endblock %}
   </body>
 {% endblock content %}

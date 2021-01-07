@@ -1,10 +1,17 @@
+# Built-in
 import time
-import pandas as pd
 import secrets
+
+# Third party
+import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-from flask import Flask, render_template, request, redirect, session
-from .utils import *
+from flask import Flask, render_template, request, redirect, session, url_for
+
+# Local
+from spotify.utils import *
+from spotify.dummy_data import user_top_tracks as DEBUG_FILLER
+
 # TODO:
 # > Add "is_logged_in" check to block routes if a user isn't logged in yet.
 
@@ -15,13 +22,16 @@ def create_app():
     app.secret_key=secrets.token_bytes(16)
 
     # Home
-    @app.route('/')
+    @app.route("/")
     def index():
         # Pulls login status to pass into renderer.
         session["token_info"], authorized = get_token(session)
-
-        return render_template('index.html', 
-                               authorized=authorized)
+        
+        # Keep the user on this page if not authorized otherwise direct to app.
+        if not authorized:
+            return render_template("index.html")
+        else:
+            return redirect(url_for("main_app"))
 
 
     # Redirects users to login with spotify.
@@ -42,8 +52,51 @@ def create_app():
         token_info = sp.get_access_token(code, check_cache=False)
         
         session["token_info"] = token_info
+
+        return redirect(url_for("main_app"))
+
+
+    @app.route("/app", methods=["GET", "POST"])
+    def main_app():
+        sp = get_sp(session)
+
+        session["token_info"], authorized = get_token(session)
         
-        return redirect('/')
+        if authorized:
+            # The only POST request possible to this page is if the main app
+            # "Generate Predictions" button is clicked
+            if request.method == 'GET':     
+                return render_template('main_app.html', sp=sp, 
+                                       title='Generate a Playlist!',
+                                       songs=[])
+            else:
+                # Pull from the users form to check if they unchecked the bad 
+                # recommendation check box
+                bad_suggestion = request.form.get('goodorbad')
+                if bad_suggestion:
+                    # Code to get a bad suggestion
+                    pass
+                else:
+                    # Code to get a good suggestion
+                    pass
+
+                # DUBUG_FILLER is the output of ""sp.current_user_top_tracks(limit=10, time_range="short_term")["items"]""
+                # FORMAT OF song['uri'] or DEBUGFILLER[x]
+                # 'spotify:track:6AeG6jSoAVbmUFO6LyYmBf'
+                # PORTION WE NEED TO INPUT
+                # '6AeG6jSoAVbmUFO6LyYmBf'
+                filler = [song['uri'].split(':')[-1] for song in DEBUG_FILLER]
+                return render_template('main_app.html', sp=sp, 
+                                       method=filler,
+                                       songs=filler)
+        if not authorized:
+            return redirect(url_for("index"))
+
+
+    @app.route('/get_toggled_status') 
+    def toggled_status():
+        current_status = request.args.get('status')
+        return 'Toggled' if current_status == 'Toggled' else 'Untoggled'
 
 
     @app.route("/user_playlists")
@@ -68,7 +121,7 @@ def create_app():
         user_top_tracks = sp.current_user_top_tracks(limit=10, 
                                                      time_range="short_term"
                                                      )["items"]
-    
+
         # Get track ids for each track in user_top_tracks. Track id is needed 
         # to retrieve audio features for each of those tracks.
         top_track_ids =[track["id"] for track in user_top_tracks]
@@ -76,7 +129,7 @@ def create_app():
 
         # Create features dataframe and drop all unnecessary features
         try:
-            cols = ["type", "id", "uri", "track_href", "analysis_url"]
+            cols = ["type", "id", "uri", "track_href", "analysis_url", "time_signature"]
             features_df = pd.DataFrame(top_track_features).drop(columns=cols)
         except:
             return render_template("error.html",
@@ -95,12 +148,26 @@ def create_app():
         top_track_names = [track["name"] for track in user_top_tracks]
 
         # list of lyrics for user's top tracks
-        lyrics = get_lyrics([top_track_artists[3]], [top_track_names[3]])
+        # NOTE: takes around 20 seconds to pull lyrics for 10 tracks
+        #lyrics = get_lyrics(top_track_artists, top_track_names)
 
+        # Read from song dataset
+        data_df = pd.read_csv("../spotify/data/data.csv").drop(columns=["explicit", "year", "release_date"])
+        
+        # Get bad recommendations
+        rec_names, rec_ids, rec_artists = bad_recs(features_df, data_df)
+
+        #Get links to spotify page of the bad recommendations
+        rec_links = song_links(rec_ids)
+
+        #names_links = zip(rec_names, rec_links)
+        rec_lyrics = get_lyrics(rec_artists, rec_names)
+        noun_chunks = generate_noun_chunks(rec_lyrics)
+        playlist_name = choose_name(noun_chunks)
         return render_template("user_top_tracks.html", 
-                                top_track_artists=top_track_artists, 
                                 top_track_names=top_track_names, 
-                                lyrics=lyrics, 
+                                rec_names=rec_names,
+                                playlist_name=playlist_name,
                                 title="Top Tracks")
 
 
