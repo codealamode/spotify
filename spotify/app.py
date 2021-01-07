@@ -129,7 +129,7 @@ def create_app():
 
         # Create features dataframe and drop all unnecessary features
         try:
-            cols = ["type", "id", "uri", "track_href", "analysis_url"]
+            cols = ["type", "id", "uri", "track_href", "analysis_url", "time_signature"]
             features_df = pd.DataFrame(top_track_features).drop(columns=cols)
         except:
             return render_template("error.html",
@@ -148,12 +148,26 @@ def create_app():
         top_track_names = [track["name"] for track in user_top_tracks]
 
         # list of lyrics for user's top tracks
-        lyrics = get_lyrics([top_track_artists[3]], [top_track_names[3]])
+        # NOTE: takes around 20 seconds to pull lyrics for 10 tracks
+        #lyrics = get_lyrics(top_track_artists, top_track_names)
 
+        # Read from song dataset
+        data_df = pd.read_csv("../spotify/data/data.csv").drop(columns=["explicit", "year", "release_date"])
+        
+        # Get bad recommendations
+        rec_names, rec_ids, rec_artists = bad_recs(features_df, data_df)
+
+        #Get links to spotify page of the bad recommendations
+        rec_links = song_links(rec_ids)
+
+        #names_links = zip(rec_names, rec_links)
+        rec_lyrics = get_lyrics(rec_artists, rec_names)
+        noun_chunks = generate_noun_chunks(rec_lyrics)
+        playlist_name = choose_name(noun_chunks)
         return render_template("user_top_tracks.html", 
-                                top_track_artists=top_track_artists, 
                                 top_track_names=top_track_names, 
-                                lyrics=lyrics, 
+                                rec_names=rec_names,
+                                playlist_name=playlist_name,
                                 title="Top Tracks")
 
 
