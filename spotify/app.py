@@ -1,10 +1,17 @@
+# Built-in
 import time
-import pandas as pd
 import secrets
+
+# Third party
+import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-from flask import Flask, render_template, request, redirect, session
-from .utils import *
+from flask import Flask, render_template, request, redirect, session, url_for
+
+# Local
+from spotify.utils import *
+from spotify.dummy_data import user_top_tracks as DEBUG_FILLER
+
 # TODO:
 # > Add "is_logged_in" check to block routes if a user isn't logged in yet.
 
@@ -15,13 +22,16 @@ def create_app():
     app.secret_key=secrets.token_bytes(16)
 
     # Home
-    @app.route('/')
+    @app.route("/")
     def index():
         # Pulls login status to pass into renderer.
         session["token_info"], authorized = get_token(session)
-
-        return render_template('index.html', 
-                               authorized=authorized)
+        
+        # Keep the user on this page if not authorized otherwise direct to app.
+        if not authorized:
+            return render_template("index.html")
+        else:
+            return redirect(url_for("main_app"))
 
 
     # Redirects users to login with spotify.
@@ -42,8 +52,51 @@ def create_app():
         token_info = sp.get_access_token(code, check_cache=False)
         
         session["token_info"] = token_info
+
+        return redirect(url_for("main_app"))
+
+
+    @app.route("/app", methods=["GET", "POST"])
+    def main_app():
+        sp = get_sp(session)
+
+        session["token_info"], authorized = get_token(session)
         
-        return redirect('/')
+        if authorized:
+            # The only POST request possible to this page is if the main app
+            # "Generate Predictions" button is clicked
+            if request.method == 'GET':     
+                return render_template('main_app.html', sp=sp, 
+                                       title='Generate a Playlist!',
+                                       songs=[])
+            else:
+                # Pull from the users form to check if they unchecked the bad 
+                # recommendation check box
+                bad_suggestion = request.form.get('goodorbad')
+                if bad_suggestion:
+                    # Code to get a bad suggestion
+                    pass
+                else:
+                    # Code to get a good suggestion
+                    pass
+
+                # DUBUG_FILLER is the output of ""sp.current_user_top_tracks(limit=10, time_range="short_term")["items"]""
+                # FORMAT OF song['uri'] or DEBUGFILLER[x]
+                # 'spotify:track:6AeG6jSoAVbmUFO6LyYmBf'
+                # PORTION WE NEED TO INPUT
+                # '6AeG6jSoAVbmUFO6LyYmBf'
+                filler = [song['uri'].split(':')[-1] for song in DEBUG_FILLER]
+                return render_template('main_app.html', sp=sp, 
+                                       method=filler,
+                                       songs=filler)
+        if not authorized:
+            return redirect(url_for("index"))
+
+
+    @app.route('/get_toggled_status') 
+    def toggled_status():
+        current_status = request.args.get('status')
+        return 'Toggled' if current_status == 'Toggled' else 'Untoggled'
 
 
     @app.route("/user_playlists")
@@ -63,13 +116,13 @@ def create_app():
         sp = get_sp(session)
 
         # Get top 10 of user's recently listened to tracks
-         # !BUG! A bug happens here if a user tries to access this route without
-         #       being logged in...
+        # !BUG! A bug happens here if a user tries to access this route without
+        #       being logged in...
         user_top_tracks = sp.current_user_top_tracks(limit=10, 
                                                      time_range="short_term"
                                                      )["items"]
-        
-        # Get list of track ids for each track in user_top_tracks. Track id is needed 
+
+        # Get track ids for each track in user_top_tracks. Track id is needed 
         # to retrieve audio features for each of those tracks.
         top_track_ids =[track["id"] for track in user_top_tracks]
         top_track_features = sp.audio_features(top_track_ids)
@@ -87,7 +140,7 @@ def create_app():
 
         # Get list of artist names for each track in user_top_tracks. 
         # NOBUG: Some tracks have multiple artists. In those cases, we choose 
-        #        just the first one to feed into get_lyrics()        
+        #        just the first one to feed into get_lyrics()
         top_track_artists = [track["artists"][0]["name"] 
                              for track in user_top_tracks]
 

@@ -182,6 +182,7 @@ def choose_name(noun_chunks):
 
 
 if __name__ == "__main__":
+    print('DEBUG MODE DETECTED FOR UTILS.PY - TESTING WITH DUMMY DATA')
     genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
     # artist = genius.search_artist("Britney Spears", max_songs=0)
     # song=artist.song("Toxic")
