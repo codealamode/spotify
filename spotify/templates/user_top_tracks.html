@@ -12,6 +12,13 @@
         <p>{{ name }}</p>
       {% endfor %}
       {{ lyrics }}
+      <br><br>
+      <h1>You'll hate these tracks!</h1>
+      <hr>
+      {% for rec in recs %}
+        <p>{{ rec }}</p>
+      {% endfor %}
+      <br><br>
     {% endblock %}
   </body>
 {% endblock content %}
