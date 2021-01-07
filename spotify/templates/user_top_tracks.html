@@ -12,13 +12,13 @@
         <p>{{ name }}</p>
       {% endfor %}
       <br>
-      <h2>Lyrics for first song</h2>
-      {{ lyrics }}
+      <h2>Your rec playlist name</h2>
+      {{ playlist_name }}
       <br><br>
       <h1>You'll hate these tracks!</h1>
       <hr>
-      {% for rec in recs %}
-        <p>{{ rec }}</p>
+      {% for name in rec_names %}
+        <p>{{ name }}</p>>
       {% endfor %}
       <br><br>
     {% endblock %}

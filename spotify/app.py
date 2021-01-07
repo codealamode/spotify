@@ -68,7 +68,7 @@ def create_app():
         user_top_tracks = sp.current_user_top_tracks(limit=10, 
                                                      time_range="short_term"
                                                      )["items"]
-    
+        
         # Get list of track ids for each track in user_top_tracks. Track id is needed 
         # to retrieve audio features for each of those tracks.
         top_track_ids =[track["id"] for track in user_top_tracks]
@@ -96,18 +96,25 @@ def create_app():
 
         # list of lyrics for user's top tracks
         # NOTE: takes around 20 seconds to pull lyrics for 10 tracks
-        lyrics = get_lyrics(top_track_artists, top_track_names)
+        #lyrics = get_lyrics(top_track_artists, top_track_names)
 
         # Read from song dataset
         data_df = pd.read_csv("../spotify/data/data.csv").drop(columns=["explicit", "year", "release_date"])
         
         # Get bad recommendations
-        recs = bad_recs(features_df, data_df)
+        rec_names, rec_ids, rec_artists = bad_recs(features_df, data_df)
+
+        #Get links to spotify page of the bad recommendations
+        rec_links = song_links(rec_ids)
+
+        #names_links = zip(rec_names, rec_links)
+        rec_lyrics = get_lyrics(rec_artists, rec_names)
+        noun_chunks = generate_noun_chunks(rec_lyrics)
+        playlist_name = choose_name(noun_chunks)
         return render_template("user_top_tracks.html", 
-                                top_track_artists=top_track_artists, 
                                 top_track_names=top_track_names, 
-                                lyrics=lyrics[0], 
-                                recs=recs,
+                                rec_names=rec_names,
+                                playlist_name=playlist_name,
                                 title="Top Tracks")
 
 
