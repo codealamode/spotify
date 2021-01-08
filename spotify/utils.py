@@ -193,10 +193,19 @@ def choose_name(noun_chunks):
     The selected phrases are extracted with the spaCy library's noun chunks.
     """
     word_length = 0
+    conjs = ["and", "or", "but"]
     while word_length < 3:
         playlist = random.choice(noun_chunks)
         word_length = len(playlist.split())
-    return playlist.title()
+    if word_length > 4:
+        p_list = random.sample(playlist.split(), k=2)
+        play_name = " ".join(p_list)
+        while play_name.lower().startswith(tuple(conjs)) or play_name.lower().endswith(tuple(conjs)):
+          p_list = random.sample(playlist.split(), k=2)
+          play_name = " ".join(p_list)
+        return play_name.title()
+    else:
+        return playlist.title()
 
 
 if __name__ == "__main__":

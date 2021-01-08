@@ -2,7 +2,11 @@
 {% block content %}
     <center>
         <p class="subheader">Welcome, {{ sp.current_user()['display_name'].split(" ")[0] }}!</p>
-        <p>Using your top 10 recent tracks we will suggest music according to their dissimilarity using advanced audio analytics provided by Spotify™ like "speechiness", "loudness" and "danceability"</p>
+        <p>
+            Using your top 10 recent tracks, our model suggests a playlist of 10 tracks you should dislike and uses the lyrics to generate a playlist name. 
+            Listen below right in our app and click the Spotify icon for a particular track to be routed to its Spotify page.
+            Check out the About page for more info but most of all, have fun!
+        </p>
         <br></br>
         <form method="POST" action="/app">
             <button class="button" style="font-size:25px;" name="badrecs">Generate Suggestions</button>

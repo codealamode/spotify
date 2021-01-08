@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+<br>
+<h3 style = "text-align: center;">Welcome to Bad Songs Predictor!</h3>
+    <br>
+    <div id="wrap">
+        <div id="main">
+            <div style="text-align: center;">
+                <img src="https://community.spotify.com/spotify/attachments/spotify/desktop_windows/14218/1/Capture.PNG" alt="Blurry Spotify Playlist" class="center" style="width: 500px;">
+            </div>
+            <br><br>
+            <p>
+                Music can be a fascinating topic. So many different genres with several adoring fans, lots of whom think a particular one is best.
+                All too often there are discussions and arguments on why or if a certain genre should be classified as terrible.
+                An apt encapsulation of "one man's meat is another man's poison".
+                This got us thinking, what if we could get both men to see what the other sees?
+                <br><br>
+                <h4>Method</h4>
+                Based on a user's recent listens, our model generates 10 songs we believe the user won't be interested in.
+                The model looks at the audio features of a user's top recent tracks like "speechiness", "loudness", "danceability" then suggests songs that are highly dissimilar.
+                For students of several genres, note that our model uses your top 10 recent tracks so you could get a genre on the other side of the spectrum that you haven't listened to in a while.
+                Be aware the more further out of the norm your bad suggestions are, the longer it could take to generate. Please be a bit patient. However you can click "Generate Suggestions" again if it's taking extra long.
+                <br><br>
+                We also retrieve the lyrics for the songs via the Genius API to come up with the name of the playlist for these 10 songs.
+                See if you can guess which song resulted in this newfound playlist's name. Might require listening to some of these songs though ;)
+                Our app has a mini player embedded so you can listen to the songs right within the app.
+                We absolutely do not expect you to like any of the songs in our playlist.
+                <br><br>
+                If you've had enough of the bad songs, get some reprieve by getting a playlist of good suggestions.
+                Simply select the "Generate good suggestions" right below the player and get 10 songs you should like.
+                All the properties of the bad playlists apply to the good playlist suggestions, right down to naming the playlists.
+                Want to add a particular song to your liked songs? Click the Spotify logo and head on over to its Spotify page.
+            </p>
+            <p>
+                Head on over to our main page and start generating some playlists. Have fun!
+                <div style="text-align: center;">
+                    <form action="/">
+                        <button class="button" style="font-size:20px;" name="badrecs">App Home</button>
+                    </form>
+                </div>
+            </p>
+            <p>
+                For the nerds: Check our our <a style="color: blue;" target="_blank" href="https://github.com/Spotify-DS-TT-57/spotify">GitHub</a> for the source code.
+            </p>
+        </div>
+    </div>
+    <div id="footer" style="font-size: x-small;">
+        Brought to you by Reid Harris, Trey Heaney, Christopher Lee, Laurence Obi, and Ik Okoro
+    </div>
+{% endblock %}
