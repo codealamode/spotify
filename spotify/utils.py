@@ -87,10 +87,12 @@ def get_lyrics(artists, songs):
 
     Returns: A list of lyrics corresponding to each track 
     """
-    genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
-    lyrics = [genius.search_song(song, artist).lyrics
-            for (song, artist) in zip(songs, artists)
-            if genius.search_song(song, artist) is not None]
+    genius = lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
+    lyrics = []
+    for song, artist in zip(songs, artists):
+        lyric = genius.search_song(song, artist)
+        if lyric:
+            lyrics.append(lyric.lyrics)
     return lyrics
 
 
@@ -126,17 +128,10 @@ def bad_recs(features_df, data_df):
     # Get the 10 most dissimilar songs
     bottom_ten_recs = neigh.kneighbors(user_avg, return_distance=False).flatten()[-10:]
 
-    # Return song names of bottom_ten_recs
-    rec_names = [data_df.iloc[rec]["name"] for rec in bottom_ten_recs]
-
     # Return song ids of bottom_ten_recs 
     rec_ids = [data_df.iloc[rec]["id"] for rec in bottom_ten_recs]
 
-    # Return artists of each song in bottom_ten_recs (used for getting lyrics). 
-    # If multiple artists on each track, choose the first one. 
-    rec_artists = [ast.literal_eval(data_df.iloc[rec]["artists"])[0] for rec in bottom_ten_recs]
-
-    return rec_names, rec_ids, rec_artists
+    return rec_ids
 
 
 def song_links(ids):
@@ -145,7 +140,7 @@ def song_links(ids):
     """
     sp = get_sp(session)
     all_tracks = sp.tracks(ids)
-    links = [link for song in all_tracks["tracks"] for (_, link) in song["external_urls"].items()]
+    links = [song['uri'] for song in all_tracks["tracks"]]
     return links
 
 

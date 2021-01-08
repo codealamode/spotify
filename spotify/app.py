@@ -15,6 +15,11 @@ from spotify.dummy_data import user_top_tracks as DEBUG_FILLER
 # TODO:
 # > Add "is_logged_in" check to block routes if a user isn't logged in yet.
 
+big_data = pd.read_csv("../spotify/data/data.csv").drop(columns=["explicit", 
+                                                                 "year", 
+                                                                 "release_date"])
+
+
 
 def create_app():
 
@@ -60,43 +65,63 @@ def create_app():
     def main_app():
         sp = get_sp(session)
 
+        # Login check/redirect.
         session["token_info"], authorized = get_token(session)
-        
-        if authorized:
-            # The only POST request possible to this page is if the main app
-            # "Generate Predictions" button is clicked
-            if request.method == 'GET':     
-                return render_template('main_app.html', sp=sp, 
-                                       title='Generate a Playlist!',
-                                       songs=[])
-            else:
-                # Pull from the users form to check if they unchecked the bad 
-                # recommendation check box
-                bad_suggestion = request.form.get('goodorbad')
-                if bad_suggestion:
-                    # Code to get a bad suggestion
-                    pass
-                else:
-                    # Code to get a good suggestion
-                    pass
-
-                # DUBUG_FILLER is the output of ""sp.current_user_top_tracks(limit=10, time_range="short_term")["items"]""
-                # FORMAT OF song['uri'] or DEBUGFILLER[x]
-                # 'spotify:track:6AeG6jSoAVbmUFO6LyYmBf'
-                # PORTION WE NEED TO INPUT
-                # '6AeG6jSoAVbmUFO6LyYmBf'
-                filler = [song['uri'].split(':')[-1] for song in DEBUG_FILLER]
-                return render_template('main_app.html', sp=sp, 
-                                       method=filler,
-                                       songs=filler)
         if not authorized:
             return redirect(url_for("index"))
 
+        # The only POST request possible to this page is if the main app
+        # "Generate Predictions" button is clicked.
+        if request.method == 'GET':     
+            return render_template('main_app.html', sp=sp, songs=[])
 
-    @app.route('/get_toggled_status') 
-    def toggled_status():
-        current_status = request.args.get('status')
-        return 'Toggled' if current_status == 'Toggled' else 'Untoggled'
+        # Pull user top tracks from spotify API.
+        user_top_tracks = sp.current_user_top_tracks(limit=10, 
+                                                     time_range="short_term"
+                                                    )["items"]
+        # Raise error if no recent top tracks.
+        if not user_top_tracks:
+            return render_template("error.html", type='Empty Spotify')
+
+        # Pull top track audio features.
+        top_track_ids =[track["id"] for track in user_top_tracks]
+        top_track_features = sp.audio_features(top_track_ids)
+
+        # Cast features to a dataframe.
+        cols = ["type", "id", "uri", "track_href", "analysis_url", 
+                "time_signature"]
+        top_df = pd.DataFrame(top_track_features).drop(columns=cols)
+
+        # Write the df to a csv file !!!!!!!!!!!!!!!!!!!!!!HACK!!!!!!!!!!!!!!!!!
+        top_df.to_csv("top_df.csv", index=False)
+
+
+        top_track_artists = [track["artists"][0]["name"] for track in 
+                             user_top_tracks]
+        top_track_names = [track["name"] for track in user_top_tracks]
+
+        rec_names, rec_ids, rec_artists = bad_recs(top_df, big_data)
+
+        rec_links = song_links(rec_ids)
+
+        print(rec_links)
+
+        # Pull from the users form to check if they unchecked the bad 
+        # recommendation check box
+        bad_suggestion = request.form.get('goodorbad')
+        if bad_suggestion:
+            # Code to get a bad suggestion
+            pass
+        else:
+            # Code to get a good suggestion
+            pass
+
+
+        songs = [uri.split(':')[-1] for uri in rec_links]
+        # songs = [song['uri'].split(':')[-1] for song in DEBUG_FILLER]
+        print(songs)
+        print(rec_links)
+        return render_template('main_app.html', sp=sp, songs=songs)
 
 
     @app.route("/user_playlists")
@@ -122,6 +147,7 @@ def create_app():
                                                      time_range="short_term"
                                                      )["items"]
 
+        #############
         # Get track ids for each track in user_top_tracks. Track id is needed 
         # to retrieve audio features for each of those tracks.
         top_track_ids =[track["id"] for track in user_top_tracks]
@@ -141,8 +167,7 @@ def create_app():
         # Get list of artist names for each track in user_top_tracks. 
         # NOBUG: Some tracks have multiple artists. In those cases, we choose 
         #        just the first one to feed into get_lyrics()
-        top_track_artists = [track["artists"][0]["name"] 
-                             for track in user_top_tracks]
+        top_track_artists = [track["artists"][0]["name"] for track in user_top_tracks]
 
         # Get list of track names for each track in user_top_tracks
         top_track_names = [track["name"] for track in user_top_tracks]
@@ -157,7 +182,7 @@ def create_app():
         # Get bad recommendations
         rec_names, rec_ids, rec_artists = bad_recs(features_df, data_df)
 
-        #Get links to spotify page of the bad recommendations
+        # Get links to spotify page of the bad recommendations
         rec_links = song_links(rec_ids)
 
         #names_links = zip(rec_names, rec_links)
