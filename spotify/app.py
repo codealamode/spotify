@@ -100,23 +100,28 @@ def create_app():
                              user_top_tracks]
         top_track_names = [track["name"] for track in user_top_tracks]
 
-        rec_names, rec_ids, rec_artists = bad_recs(top_df, big_data)
-
-        rec_links = song_links(rec_ids)
-
-        rec_lyrics = get_lyrics(rec_artists, rec_names)
-        noun_chunks = generate_noun_chunks(rec_lyrics)
-        playlist_name = choose_name(noun_chunks)
-
         # Pull from the users form to check if they unchecked the bad 
         # recommendation check box
-        bad_suggestion = request.form.get('goodorbad')
-        if bad_suggestion:
-            # Code to get a bad suggestion
-            pass
+        wants_good_recommendations = request.form.get('goodorbad')
+        if wants_good_recommendations:
+            rec_names, rec_ids, rec_artists = recommend(top_df, big_data,
+                                                        bad=False)
+
+            rec_links = song_links(rec_ids)
+
+            rec_lyrics = get_lyrics(rec_artists, rec_names)
+            noun_chunks = generate_noun_chunks(rec_lyrics)
+            playlist_name = choose_name(noun_chunks)
+
         else:
-            # Code to get a good suggestion
-            pass
+            rec_names, rec_ids, rec_artists = recommend(top_df, big_data)
+
+            rec_links = song_links(rec_ids)
+
+            rec_lyrics = get_lyrics(rec_artists, rec_names)
+            noun_chunks = generate_noun_chunks(rec_lyrics)
+            playlist_name = choose_name(noun_chunks)
+
 
 
         songs = [uri.split(':')[-1] for uri in rec_links]
@@ -182,7 +187,7 @@ def create_app():
         data_df = pd.read_csv("../spotify/data/data.csv").drop(columns=["explicit", "year", "release_date"])
         
         # Get bad recommendations
-        rec_names, rec_ids, rec_artists = bad_recs(features_df, data_df)
+        rec_names, rec_ids, rec_artists = recommend(features_df, data_df)
 
         # Get links to spotify page of the bad recommendations
         rec_links = song_links(rec_ids)

@@ -2,7 +2,7 @@
 {% block content %}
     <center>
         <p class="subheader">Welcome, {{ sp.current_user()['display_name'].split(" ")[0] }}!</p>
-        <p>According to your top 10 favorite recent songs some suggestions will be given</p>
+        <p>Using your top 10 recent tracks we will suggest music according to their dissimilarity using advanced audio analytics provided by Spotify™ like "speechiness", "loudness" and "danceability"</p>
         <br></br>
         <form method="POST" action="/app">
             <button class="button" style="font-size:25px;">Generate Suggestions</button>
@@ -14,7 +14,7 @@
         <table id="defaulttable" style="width:50%;">
             {% if title %}
                 <tr>
-                    <th style="font-size:23;font-weight:bold;">{{ title }}</th>
+                    <th><center style="padding:10px;font-size:25px">{{ title }}</center></th>
                 </tr>
             {% endif %}
             {% if songs %}
