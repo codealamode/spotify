@@ -93,6 +93,8 @@ def get_lyrics(artists, songs):
         lyric = genius.search_song(song, artist)
         if lyric:
             lyrics.append(lyric.lyrics)
+        if len(lyrics) > 1:
+            break
     return lyrics
 
 
@@ -125,13 +127,28 @@ def bad_recs(features_df, data_df):
     neigh=NearestNeighbors(n_neighbors=len(data_df))
     neigh.fit(samples)
 
-    # Get the 10 most dissimilar songs
-    bottom_ten_recs = neigh.kneighbors(user_avg, return_distance=False).flatten()[-10:]
+    # Order songs by similarity to users top songs.
+    ordered = neigh.kneighbors(user_avg, return_distance=False).flatten()
+
+    random_indexes = []
+    while len(random_indexes) < 10:
+        index = random.randrange(-300, 0)
+        if index not in random_indexes:
+            random_indexes.append(index)
+
+
+    bottom_ten_recs = [ordered[index] for index in random_indexes]
+    # Return song names of bottom_ten_recs
+    rec_names = [data_df.iloc[rec]["name"] for rec in bottom_ten_recs]
 
     # Return song ids of bottom_ten_recs 
     rec_ids = [data_df.iloc[rec]["id"] for rec in bottom_ten_recs]
 
-    return rec_ids
+    # Return artists of each song in bottom_ten_recs (used for getting lyrics). 
+    # If multiple artists on each track, choose the first one. 
+    rec_artists = [ast.literal_eval(data_df.iloc[rec]["artists"])[0] for rec in bottom_ten_recs]
+
+    return rec_names, rec_ids, rec_artists
 
 
 def song_links(ids):
@@ -191,8 +208,17 @@ if __name__ == "__main__":
         Returns: A list of lyrics corresponding to each track 
         """
         genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
-        lyrics = [genius.search_song(song, artist).lyrics
-                for (song, artist) in zip(songs, artists) if genius.search_song(song, artist) is not None]
+
+        lyrics = []
+        for song, artist in zip(song, artists):
+            lyric = genius.search_song(song, artist)
+            if lyric:
+                print('APPENDED')
+                lyrics.append(lyric)
+            if len(lyrics) > 1:
+                print('BROKE')
+                break
+
         return lyrics
 
     ARTISTS = ["Lana Del Rey", "Bahamas", "Five Finger Death Punch", "Green Day"]

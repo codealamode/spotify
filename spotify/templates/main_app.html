@@ -14,12 +14,12 @@
         <table id="defaulttable" style="width:50%;">
             {% if title %}
                 <tr>
-                    <th>{{ title }}</th>
+                    <th style="font-size:23;font-weight:bold;">{{ title }}</th>
                 </tr>
             {% endif %}
             {% if songs %}
                 {% for song in songs %}
-                <tr style="background-color:#4CAF50">
+                <tr>
                     <th><iframe src="https://open.spotify.com/embed/track/{{ song }}" width="400" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></th>
                 </tr>
                 {% endfor %}

@@ -14,11 +14,11 @@ from spotify.dummy_data import user_top_tracks as DEBUG_FILLER
 
 # TODO:
 # > Add "is_logged_in" check to block routes if a user isn't logged in yet.
+# > Make imports smaller at end of project by only importing dependencies.
 
 big_data = pd.read_csv("../spotify/data/data.csv").drop(columns=["explicit", 
                                                                  "year", 
                                                                  "release_date"])
-
 
 
 def create_app():
@@ -104,7 +104,9 @@ def create_app():
 
         rec_links = song_links(rec_ids)
 
-        print(rec_links)
+        rec_lyrics = get_lyrics(rec_artists, rec_names)
+        noun_chunks = generate_noun_chunks(rec_lyrics)
+        playlist_name = choose_name(noun_chunks)
 
         # Pull from the users form to check if they unchecked the bad 
         # recommendation check box
@@ -121,7 +123,7 @@ def create_app():
         # songs = [song['uri'].split(':')[-1] for song in DEBUG_FILLER]
         print(songs)
         print(rec_links)
-        return render_template('main_app.html', sp=sp, songs=songs)
+        return render_template('main_app.html', sp=sp, songs=songs, title=playlist_name)
 
 
     @app.route("/user_playlists")
