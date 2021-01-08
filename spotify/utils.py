@@ -22,7 +22,7 @@ SPOTIPY_CLIENT_SECRET=getenv("SPOTIPY_CLIENT_SECRET")
 SPOTIPY_REDIRECT_URI=getenv("SPOTIPY_REDIRECT_URI")
 GENIUS_ACCESS_TOKEN=getenv("GENIUS_ACCESS_TOKEN")
 
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_sm")
 
 # Checks to see if token is valid and gets a new token if not
 def get_token(session):
@@ -193,7 +193,7 @@ def choose_name(noun_chunks):
     The selected phrases are extracted with the spaCy library's noun chunks.
     """
     word_length = 0
-    while word_length < 2:
+    while word_length < 3:
         playlist = random.choice(noun_chunks)
         word_length = len(playlist.split())
     return playlist.title()
