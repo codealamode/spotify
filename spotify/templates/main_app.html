@@ -5,13 +5,10 @@
         <p>Using your top 10 recent tracks we will suggest music according to their dissimilarity using advanced audio analytics provided by Spotify™ like "speechiness", "loudness" and "danceability"</p>
         <br></br>
         <form method="POST" action="/app">
-            <button class="button" style="font-size:25px;">Generate Suggestions</button>
-            <p style="color:grey">Good Suggestions</p>
-            <p style="position:relative;bottom:10px">
-                <input type="checkbox" name="goodorbad">
-            </p>
+            <button class="button" style="font-size:25px;" name="badrecs">Generate Suggestions</button>
         </form>
         <table id="defaulttable" style="width:50%;">
+            <br><br>
             {% if title %}
                 <tr>
                     <th><center style="padding:10px;font-size:25px">{{ title }}</center></th>
@@ -24,6 +21,14 @@
                 </tr>
                 {% endfor %}
             {% endif %}
-        </table> 
+        </table>
+        <br>
+        <form method="POST" action="/app">
+            {% if title %}
+                <p>Heard enough awful music? Check out these songs we think you might actually like: </p>
+                <button class="button" style="font-size:15px;" name="goodrecs">Generate good songs</button> 
+            {% endif %}
+        </form>
+        <br><br><br>
     </center>
 {% endblock %}
