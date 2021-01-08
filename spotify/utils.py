@@ -87,10 +87,14 @@ def get_lyrics(artists, songs):
 
     Returns: A list of lyrics corresponding to each track 
     """
-    genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
-    lyrics = [genius.search_song(song, artist).lyrics
-            for (song, artist) in zip(songs, artists)
-            if genius.search_song(song, artist) is not None]
+    genius = lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
+    lyrics = []
+    for song, artist in zip(songs, artists):
+        lyric = genius.search_song(song, artist)
+        if lyric:
+            lyrics.append(lyric.lyrics)
+        if len(lyrics) > 0:
+            break
     return lyrics
 
 
@@ -102,7 +106,7 @@ def normalize_data(df):
     return df
 
 
-def bad_recs(features_df, data_df):
+def recommend(features_df, data_df, bad=True):
     """
     Input: features_df - the dataframe of audio features for the user's top tracks
             data_df - the song dataset
@@ -123,40 +127,54 @@ def bad_recs(features_df, data_df):
     neigh=NearestNeighbors(n_neighbors=len(data_df))
     neigh.fit(samples)
 
-    # Get the 10 most dissimilar songs
-    bottom_ten_recs = neigh.kneighbors(user_avg, return_distance=False).flatten()[-10:]
+    # Order songs by similarity to users top songs.
+    ordered = neigh.kneighbors(user_avg, return_distance=False).flatten()
 
-    # Return song names of bottom_ten_recs
-    rec_names = [data_df.iloc[rec]["name"] for rec in bottom_ten_recs]
+    # Good/bad recommendation split.
+    if bad:
+        print('generated bad')
+        # Generate and pull random low indexes from ordered list.
+        random_indexes = []
+        while len(random_indexes) < 10:
+            index = random.randrange(-300, 0)
+            if index not in random_indexes:
+                random_indexes.append(index)
+        recommendations = [ordered[index] for index in random_indexes]
 
-    # Return song ids of bottom_ten_recs 
-    rec_ids = [data_df.iloc[rec]["id"] for rec in bottom_ten_recs]
+        # Return song names of recommendations
+        rec_names = [data_df.iloc[rec]["name"] for rec in recommendations]
 
-    # Return artists of each song in bottom_ten_recs (used for getting lyrics). 
+        # Return song ids of recommendations 
+        rec_ids = [data_df.iloc[rec]["id"] for rec in recommendations]
+    else:
+        print('generated good')
+        # Generate and pull random high indexes from ordered list.
+        random_indexes = []
+        while len(random_indexes) < 10:
+            index = random.randrange(0, 100)
+            if index not in random_indexes:
+                random_indexes.append(index)
+        recommendations = [ordered[index] for index in random_indexes]
+
+        rec_names = [data_df.iloc[rec]["name"] for rec in recommendations]
+
+        rec_ids = [data_df.iloc[rec]["id"] for rec in recommendations]
+
+    # Return artists of each song in recommendations (used for getting lyrics). 
     # If multiple artists on each track, choose the first one. 
-    rec_artists = [ast.literal_eval(data_df.iloc[rec]["artists"])[0] for rec in bottom_ten_recs]
+    rec_artists = [ast.literal_eval(data_df.iloc[rec]["artists"])[0] for rec in recommendations]
 
     return rec_names, rec_ids, rec_artists
 
 
 def song_links(ids):
     """
-    Takes a list of Spotify track ids and returns a list of the corresponding track links on Spotify
+    Takes a list of Spotify track ids and returns a list of the corresponding track uris on Spotify
     """
     sp = get_sp(session)
     all_tracks = sp.tracks(ids)
-    links = [link for song in all_tracks["tracks"] for (_, link) in song["external_urls"].items()]
+    links = [song['uri'] for song in all_tracks["tracks"]]
     return links
-
-
-def song_uris(ids):
-    """
-    Takes a list of Spotify track ids and returns a list of the corresponding track Spotify uri's
-    """
-    sp = get_sp(session)
-    all_tracks = sp.tracks(ids)
-    uris = [song["uri"] for song in all_tracks["tracks"]]
-    return uris
 
 
 def generate_noun_chunks(lyrics_list):
@@ -196,8 +214,17 @@ if __name__ == "__main__":
         Returns: A list of lyrics corresponding to each track 
         """
         genius=lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
-        lyrics = [genius.search_song(song, artist).lyrics
-                for (song, artist) in zip(songs, artists) if genius.search_song(song, artist) is not None]
+
+        lyrics = []
+        for song, artist in zip(song, artists):
+            lyric = genius.search_song(song, artist)
+            if lyric:
+                print('APPENDED')
+                lyrics.append(lyric)
+            if len(lyrics) > 1:
+                print('BROKE')
+                break
+
         return lyrics
 
     ARTISTS = ["Lana Del Rey", "Bahamas", "Five Finger Death Punch", "Green Day"]

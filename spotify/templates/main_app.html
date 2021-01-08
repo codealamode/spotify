@@ -2,29 +2,28 @@
 {% block content %}
     <center>
         <p class="subheader">Welcome, {{ sp.current_user()['display_name'].split(" ")[0] }}!</p>
-    </center>
-    <center style="position:relative;top:20px"> <!--BIG HACK HERE-->
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+        <p>Using your top 10 recent tracks we will suggest music according to their dissimilarity using advanced audio analytics provided by Spotify™ like "speechiness", "loudness" and "danceability"</p>
         <br></br>
-
-        
-    </center>
-    <center style="position: relative;top:80px;"> <!--BIG HACK HERE-->
         <form method="POST" action="/app">
             <button class="button" style="font-size:25px;">Generate Suggestions</button>
-            <p style="color:grey">Bad Suggestions</p>
+            <p style="color:grey">Good Suggestions</p>
             <p style="position:relative;bottom:10px">
                 <input type="checkbox" name="goodorbad">
             </p>
         </form>
         <table id="defaulttable" style="width:50%;">
-        {% if songs %}
-            {% for song in songs %}
-            <tr style="background-color:#4CAF50">
-                <th><iframe src="https://open.spotify.com/embed/track/{{ song }}" width="400" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></th>
-            </tr>
-            {% endfor %}
-        {% endif %}
+            {% if title %}
+                <tr>
+                    <th><center style="padding:10px;font-size:25px">{{ title }}</center></th>
+                </tr>
+            {% endif %}
+            {% if songs %}
+                {% for song in songs %}
+                <tr>
+                    <th><iframe src="https://open.spotify.com/embed/track/{{ song }}" width="400" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></th>
+                </tr>
+                {% endfor %}
+            {% endif %}
         </table> 
     </center>
 {% endblock %}
