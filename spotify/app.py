@@ -127,7 +127,10 @@ def create_app():
 
             rec_lyrics = get_lyrics(rec_artists, rec_names)
             noun_chunks = generate_noun_chunks(rec_lyrics)
-            playlist_name = choose_name(noun_chunks)
+            if all(x is None for x in noun_chunks):
+                playlist_name = "Another Man's Poison"
+            else:
+                playlist_name = choose_name(noun_chunks)
 
 
 
@@ -149,6 +152,14 @@ def create_app():
                                 user_playlists = user_playlists, 
                                 title="Playlists")
 
+
+    @app.route("/about")
+    def about():
+        return render_template("about.html")
+    
+    @app.route("/team")
+    def team():
+        return render_template("team.html")
 
     @app.route("/user_top_tracks")
     def user_top_tracks():

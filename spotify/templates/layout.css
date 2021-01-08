@@ -172,40 +172,40 @@ li {
   float: left;
 }
 a {
-  color: white;
+  color: blue;
 }
 /*A ton of link styles- this is horrible...*/
 a:link {
-  color: white;
+  color: blue;
   text-decoration: none;
   font-weight: normal;
 }
 a:visited {
-  color: white;
+  color: blue;
   text-decoration: none;
   font-weight: normal;
 }
 a:active {
-  color: white;
+  color: blue;
   text-decoration: none;
 }
 a:hover {
-  color: white;
+  color: blue;
   text-decoration: none;
   font-weight: none;
 }
 a.head:link {
-  color: white;
+  color: blue;
   text-decoration: none;
   font-weight: normal;
 }
 a.head:visited {
-  color: white;
+  color: blue;
   text-decoration: none;
   font-weight: normal;
 }
 a.head:active {
-  color: white;
+  color: blue;
   text-decoration: none;
 }
 a.head:hover {
@@ -224,11 +224,11 @@ a.inner:visited {
   font-weight: normal;
 }
 a.inner:active {
-  color: white;
+  color: blue;
   text-decoration: none;
 }
 a.inner:hover {
-  color: white;
+  color: blue;
   text-decoration: none;
   font-weight: none;
 }
