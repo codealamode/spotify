@@ -100,20 +100,27 @@ def create_app():
                              user_top_tracks]
         top_track_names = [track["name"] for track in user_top_tracks]
 
-        # Pull from the users form to check if they unchecked the bad 
-        # recommendation check box
-        wants_good_recommendations = request.form.get('goodorbad')
-        if wants_good_recommendations:
+        # Check if the user wanted to get good recs or bad recs
+        if "goodrecs" in request.form:
             rec_names, rec_ids, rec_artists = recommend(top_df, big_data,
                                                         bad=False)
 
             rec_links = song_links(rec_ids)
 
+            
             rec_lyrics = get_lyrics(rec_artists, rec_names)
+
+            # If none of the songs have lyrics, generate new recommendations
+            if rec_lyrics is None:
+                while rec_lyrics is None:
+                    rec_names, rec_ids, rec_artists = recommend(top_df, big_data,
+                                                            bad=False)
+                    rec_lyrics = get_lyrics(rec_artists, rec_names)
+
             noun_chunks = generate_noun_chunks(rec_lyrics)
             playlist_name = choose_name(noun_chunks)
 
-        else:
+        elif "badrecs" in request.form:
             rec_names, rec_ids, rec_artists = recommend(top_df, big_data)
 
             rec_links = song_links(rec_ids)
