@@ -3,13 +3,8 @@
 <head>
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
-	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/layout.css') }}">
-		
 	{% if title %}
 		<title>Bad Songs • {{ title }}</title>
 	{% else %}
@@ -19,31 +14,29 @@
 
 <body style='font-family:Impact'>
 	<div>
-		<div>
+		<center>
 			<div>
-				<center>
-					<p class="banner">
-						Bad Song Recommendations
-                    </p>
-                    <p style="position:relative;top:-20px">
-                        <i>"Trust us, you'll hate this..."</i>
-                    </p>
-                    <div style="width:100%;background-color:black;">
-					<ul>
-						<li style="background-color:#292929"><a href="/" class="head">Home</a></li>
-						<li><a href="/about" class="head">About</a></li>
-						<li><a href="/team" class="head">Team</a></li>
-                    </ul>
-                    </div>
-                </center>
-
-			</div> <!--To play around with inner fonts, remove the "/* */" around font-family in the below string and add custom values-->
-			<div style="position:relative;top:20px;font-size:20px;font-family:Arial;">
-				<div class="container content-block">
-					{% block content %}
-					{% endblock %}
-				</div>
+				<p class="banner">
+					Bad Song Recommendations
+				</p>
+				<p style="position:relative;top:-20px">
+					<i>"Trust us, you'll hate this..."</i>
+				</p>
 			</div>
+			<div style="width:100%;background-color:black;">
+				<ul>
+					<li><a href="{{ url_for('index') }}" class="head">App</a></li>
+					<li><a href="{{ url_for('about') }}" class="head">About</a></li>
+					<li><a href="{{ url_for('team') }}" class="head">Team</a></li>
+				</ul>
+			</div>
+		</center>
+
+	</div> <!--To play around with inner fonts, remove the "/* */" around font-family in the below string and add custom values-->
+	<div style="position:relative;top:20px;font-size:20px;font-family:Arial;">
+		<div class="container content-block">
+			{% block content %}
+			{% endblock %}
 		</div>
 	</div>
 </body>

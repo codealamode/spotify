@@ -3,15 +3,13 @@
     <center>
         <p class="subheader">Welcome, {{ sp.current_user()['display_name'].split(" ")[0] }}!</p>
         <p>
-            Using your top 10 recent tracks, our model suggests a playlist of 10 tracks you should dislike and uses the lyrics to generate a playlist name. 
-            Listen below right in our app and click the Spotify icon for a particular track to be routed to its Spotify page.
-            Check out the About page for more info but most of all, have fun!
+            Using your top 10 recent tracks we'll generate a playlist of 10 tracks you should dislike and use their lyrics to generate a playlist name. 
         </p>
         <br></br>
         <form method="POST" action="/app">
-            <button class="button" style="font-size:25px;" name="badrecs">Generate Suggestions</button>
+            <button class="button" style="font-size:25px;" name="badrecs">Generate Bad Suggestions</button>
         </form>
-        <table id="defaulttable" style="width:50%;">
+        <table style="width:50%;border-width:4px;">
             <br><br>
             {% if title %}
                 <tr>
@@ -20,8 +18,8 @@
             {% endif %}
             {% if songs %}
                 {% for song in songs %}
-                <tr>
-                    <th><iframe src="https://open.spotify.com/embed/track/{{ song }}" width="400" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></th>
+                <tr style="border-width:4px;">
+                    <th  style="border-width:4px;"><iframe src="https://open.spotify.com/embed/track/{{ song }}" width="400" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></th>
                 </tr>
                 {% endfor %}
             {% endif %}
@@ -29,8 +27,8 @@
         <br>
         <form method="POST" action="/app">
             {% if title %}
-                <p>Heard enough awful music? Check out these songs we think you might actually like: </p>
-                <button class="button" style="font-size:15px;" name="goodrecs">Generate good songs</button> 
+                <p>Heard enough awful music?</p>
+                <button class="button" style="font-size:15px;" name="goodrecs">Generate Good Suggestions</button> 
             {% endif %}
         </form>
         <br><br><br>
