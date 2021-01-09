@@ -1,22 +1,27 @@
-import lyricsgenius
-import pandas as pd
+""" Primary backend functionalities """
+
+# Built-in
 import time
+import random
+from os import getenv
+
+# Third-party
+import lyricsgenius
 import ast
 import spacy
-import random
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-from os import getenv
-from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, session
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import NearestNeighbors
+from dotenv import load_dotenv
 
 
 load_dotenv()
 SCOPE="user-library-read user-top-read"
-FEATURE_NAMES=["danceability", "energy", "key", "loudness", "mode", "speechiness", "acousticness", 
-                "instrumentalness", "liveness","valence", "tempo", "duration_ms"]
+FEATURE_NAMES=["danceability", "energy", "key", "loudness", "mode", 
+               "speechiness", "acousticness", "instrumentalness", "liveness", 
+               "valence", "tempo", "duration_ms"]
 SPOTIPY_CLIENT_ID=getenv("SPOTIPY_CLIENT_ID")
 SPOTIPY_CLIENT_SECRET=getenv("SPOTIPY_CLIENT_SECRET")
 SPOTIPY_REDIRECT_URI=getenv("SPOTIPY_REDIRECT_URI")
@@ -108,11 +113,12 @@ def normalize_data(df):
 
 def recommend(features_df, data_df, bad=True):
     """
-    Input: features_df - the dataframe of audio features for the user's top tracks
+    Input: features_df - a dataframe of audio features for the user's top tracks
             data_df - the song dataset
 
-    Returns: List of names of the 10 songs that is most dissimilar to 
-            the average of the user's audio features as determined by NearestNeighbors.
+    Returns: List of names of the 10 songs that is most dissimilar to the 
+             average of the user's audio features as determined by 
+             NearestNeighbors.
     """
 
     features_df=normalize_data(features_df).values
@@ -162,14 +168,16 @@ def recommend(features_df, data_df, bad=True):
 
     # Return artists of each song in recommendations (used for getting lyrics). 
     # If multiple artists on each track, choose the first one. 
-    rec_artists = [ast.literal_eval(data_df.iloc[rec]["artists"])[0] for rec in recommendations]
+    rec_artists = [ast.literal_eval(data_df.iloc[rec]["artists"])[0] 
+                   for rec in recommendations]
 
     return rec_names, rec_ids, rec_artists
 
 
 def song_links(ids):
     """
-    Takes a list of Spotify track ids and returns a list of the corresponding track uris on Spotify
+    Takes a list of Spotify track ids and returns a list of the corresponding 
+    track uris on Spotify
     """
     sp = get_sp(session)
     all_tracks = sp.tracks(ids)
@@ -189,8 +197,9 @@ def generate_noun_chunks(lyrics_list):
 
 def choose_name(noun_chunks):
     """
-    Takes a list of lyrics and chooses a phrase at random to set as an amusing playlist name. 
-    The selected phrases are extracted with the spaCy library's noun chunks.
+    Takes a list of lyrics and chooses a phrase at random to set as an amusing 
+    playlist name. The selected phrases are extracted with the spaCy library's 
+    noun chunks.
     """
     word_length = 0
     conjs = ["and", "or", "but"]
@@ -206,7 +215,7 @@ def choose_name(noun_chunks):
         return play_name.title()
     else:
         return playlist.title()
-
+    
 
 if __name__ == "__main__":
     print('DEBUG MODE DETECTED FOR UTILS.PY - TESTING WITH DUMMY DATA')

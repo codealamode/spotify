@@ -1,25 +1,36 @@
 {% extends "layout.html" %}
 {% block content %}
+<style>
+    table, th, td {
+  border: 2px solid white;
+  font-weight: normal;
+}
+</style>
 <br>
-<h3 style = "text-align: center;">Bad Songs Team</h3>
+<h1>Bad Songs Team</h1>
     <br>
-    <div style="text-align: center;">
+    <div>
         <p>
-            Check out what hand each member of our team had in bringing you this quirky app.
-            <br><br>
-            Reid Harris: Web scraping master, NLP for lyrics, Spotify API
-            <br><br>
-            Trey Heaney: Front end genius, Back end, Spotify API
-            <br><br>
-            Christopher Lee: Spotify API guru, Machine Learning for recommendations, Back end
-            <br><br>
-            Laurence Obi: Version control maestro, Jack of all trades and master of all
-            <br><br>
-            Ik Okoro: NLP for lyrics, Spotify API, Genius API, Front end
-            <br><br>
+            <table>
+            <tr>    
+                <th><b>Christopher Lee</b>: Back-end, Suggestions Model and API management</th>
+            </tr>
+            <tr>
+                <th><b>Reid Harris</b>: Back-end, Suggestions Model and Data Sourcing</th>
+            </tr>
+            <tr>
+                <th><b>Ik Okoro</b>: Back-end, Playlist Name Model and API management</th>
+            </tr>
+            <tr>
+                <th><b>Trey Heaney</b>: Full-stack, UI and deployment</th>
+            </tr>
+            <tr>    
+                <th><b>Laurence Obi</b>: Version Control and Code Review</th>
+            </tr>
+            </table>
         </p>
         <p>
-            We had a lot of fun coming up with the idea for this app and bringing it to life so we hope you enjoy it
+            We had a lot of fun making this app and we hope you enjoy it.
         </p>
     </div>
 {% endblock %}
