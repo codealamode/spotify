@@ -1,4 +1,4 @@
-from spotify import APP
+from spotify import app
 
 if __name__ == '__main__':
-    APP.run(debug=True)
+    app.run(debug=True)
