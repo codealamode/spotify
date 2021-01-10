@@ -25,7 +25,7 @@ All the properties of the bad playlists apply to the good playlist suggestions, 
 Want to add a particular song to your liked songs? Click the Spotify logo in the mini player to be redirected to its Spotify page.  
 
 <br /><br />
-### Check out our web app at [*insert link]() and have some fun with it!  
+### Check out our web app at https://bad-songs.herokuapp.com/ and have some fun with it!  
 
 <br />
 
